@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading;
 
 namespace RandomPersons
@@ -16,7 +17,7 @@ namespace RandomPersons
         private string fileName;
         private int rowCount;
         static string columnRow;
-        
+
         public CsvWriter(string fileName, int rowCount)
         {
             this.fileName = fileName;
@@ -60,6 +61,29 @@ namespace RandomPersons
             });
 
             return cwList;
+        }
+
+
+        public static void ExecuteParrallelWrite(string fileName = "RandomPersons", int rowCount = 100000, int concurrency = 5, string extension = "csv")
+        {
+            List<CsvWriter> writers = CsvWriter.GetCSVWriters(fileName, rowCount, concurrency, extension);
+
+            List<Thread> threads = writers.Select(w => new Thread(w.WriteFile)).ToList();
+
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+
+            threads.ForEach(t => t.Start());
+
+            Console.WriteLine("CSV Generation has Started");
+
+            threads.ForEach(t => t.Join());
+
+            sw.Stop();
+
+            Console.WriteLine("Threads have Finished in " + sw.Elapsed);
+
         }
 
     }

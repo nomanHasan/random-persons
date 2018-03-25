@@ -13,26 +13,30 @@ namespace RandomPersons
         {
 
 
-            List<CsvWriter> writers = CsvWriter.GetCSVWriters("PeopleOfDhaka", 1000000, 4, "csv");
+            Console.Write("File Name: ");
 
-            List<Thread> threads = writers.Select(w => new Thread(w.WriteFile)).ToList();
+            string fileName = Console.ReadLine();
+            Console.WriteLine();
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            Console.Write("Row Count: ");
 
-            threads.ForEach(t => t.Start());
+            int rowCount= Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine();
 
-            Console.WriteLine("Thread has Started");
+            Console.Write("Concurrency : ");
 
-            threads.ForEach(t => t.Join());
+            int concurrency = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine();
 
-            sw.Stop();
+            Console.Write("Extension: ");
 
-            Console.WriteLine("Threads has Finished" + sw.Elapsed);
+            string extension = Console.ReadLine();
+            Console.WriteLine();
 
-            
-            Console.WriteLine("Write Finished");
+            Console.WriteLine("Configuration: " + fileName + " " + rowCount + " " + concurrency + " " + extension);
 
+
+            CsvWriter.ExecuteParrallelWrite(fileName, rowCount, concurrency, extension);
 
 
             Console.ReadLine();
